@@ -15,6 +15,7 @@ export CDDNS_API_KEY="Your API key"
 export CDDNS_DOMAIN_NAME="Your domain name"
 export CDDNS_EMAIL_ADDRESS="Your email address
 export CDDNS_DB_PATH="The path where you'd like the SQLite DB saved"
+export CDDNS_LOG_PATH="The path of the file where you'd like logs saved"
 ```
 4. Run `python3 cloudflare_ddns.py`
 5. ???
