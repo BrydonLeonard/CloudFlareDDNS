@@ -1,2 +1,7 @@
-dns.db
 my_secrets.py
+my_secrets.sh
+
+*.log
+*.db
+
+*__pycache__/

@@ -8,4 +8,5 @@ setup(name='cloudflare_ddns',
       author_email='brydon.leonard@gmail.com',
       license='MIT',
       packages=['cloudflare_ddns'],
-      zip_safe=False)
+      zip_safe=False,
+      install_requires=['requests'])
