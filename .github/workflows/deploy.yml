@@ -14,7 +14,7 @@ jobs:
     - name: Deploy and run DDNS
       uses: appleboy/ssh-action@v0.1.10
       with:
-        host: brydonleonard.com
+        host: ssh.brydonleonard.com
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.SSH_PRIV_KEY }}
         port: 22
