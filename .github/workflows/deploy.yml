@@ -11,7 +11,7 @@ jobs:
       name: production
     steps:
       - name: Checkout 🛎
-        uses: actions/checkout@mainline
+        uses: actions/checkout@master
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh/
