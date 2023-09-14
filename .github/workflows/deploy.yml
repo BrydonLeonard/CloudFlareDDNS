@@ -20,8 +20,37 @@ jobs:
         port: 22
         command_timeout: 30m
         script: | 
+          # Make a working dir
           cd /usr/local/GateKey
+          mkdir -p ./working_cddns
+          mkdir -p ./var
+          mkdir -p ./var/logs
+          rm -rf ./working_cddns/*
+          cd working_cddns
+
+          # Clone the repo
           git config user.email ${{ secrets.EMAIL }}
           git config github.token ${{ secrets.GITHUB_TOKEN }}
           git clone https://github.com/BrydonLeonard/CloudFlareDDNS.git
+          cd ../
+
+          # Set env vars
+          export CDDNS_API_KEY=${{ secrets.CLOUDFLARE_KEY }}
+          export CDDNS_DOMAIN_NAME="brydonleonard.com"
+          export CDDNS_EMAIL_ADDRESS= ${{ secrets.EMAIL }}
+          export CDDNS_DB_PATH="/usr/bin/GateKey/var/dns.db"
+          export CDDNS_LOG_PATH="/usr/bin/GateKey/var/logs/cddns.log"
+
+          # Kill the process if it's already running
+          pgrep cloudflare_ddns.py | kill || echo "DDNS was not running"
+
+          # Flip the environments
+          rm -rf ./CloudFlareDDNS/
+          mv ./working_cddns/* ./
+
+          # Run the script
+          cd CloudFlareDDNS
+          python3 ./cloudflare_ddns.py & disown
+          
+          
           
