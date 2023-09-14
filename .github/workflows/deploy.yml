@@ -35,9 +35,9 @@ jobs:
           cd ../
 
           # Set env vars
-          export CDDNS_API_KEY=${{ secrets.CLOUDFLARE_KEY }}
+          export CDDNS_API_KEY="${{ secrets.CLOUDFLARE_KEY }}"
           export CDDNS_DOMAIN_NAME="brydonleonard.com"
-          export CDDNS_EMAIL_ADDRESS= ${{ secrets.EMAIL }}
+          export CDDNS_EMAIL_ADDRESS="${{ secrets.EMAIL }}"
           export CDDNS_DB_PATH="/usr/local/GateKey/var/dns.db"
           export CDDNS_LOG_PATH="/usr/local/GateKey/var/logs/cddns.log"
 
