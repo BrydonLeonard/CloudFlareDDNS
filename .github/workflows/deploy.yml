@@ -34,15 +34,16 @@ jobs:
           git config user.email ${{ secrets.EMAIL }}
           git config github.token ${{ secrets.GITHUB_TOKEN }}
           git clone https://github.com/BrydonLeonard/CloudFlareDDNS.git
+
+          # Add the run script
+          echo 'Adding run script'
+          echo '#!/bin/bash
+          /usr/bin/python3 /usr/local/GateKey/CloudFlareDDNS/cloudflare_ddns.py' > ./CloudFlareDDNS/run.sh
+          
           cd ../
 
           # Set env vars
           echo 'Setting env vars'
-          export CDDNS_API_KEY="${{ secrets.CLOUDFLARE_KEY }}"
-          export CDDNS_DOMAIN_NAME="brydonleonard.com"
-          export CDDNS_EMAIL_ADDRESS="${{ secrets.EMAIL }}"
-          export CDDNS_DB_PATH="/usr/local/GateKey/var/dns.db"
-          export CDDNS_LOG_PATH="/usr/local/GateKey/var/logs/cddns.log"
 
           # Configure the daemon
           echo 'Configuring the daemon'
@@ -52,9 +53,16 @@ jobs:
           [Service]
           Type=simple
           User=brydonl
-          ExecStart='python3 /usr/local/GateKey/CloudFlareDDNS/cloudflare_ddns.py'
+          ExecStart='/usr/local/GateKey/CloudFlareDDNS/run.sh'
           Restart=always
           RestartSec=1s
+
+          # Env vars
+          Environment=CDDNS_API_KEY="${{ secrets.CLOUDFLARE_KEY }}"
+          Environment=CDDNS_DOMAIN_NAME="brydonleonard.com"
+          Environment=CDDNS_EMAIL_ADDRESS="${{ secrets.EMAIL }}"
+          Environment=CDDNS_DB_PATH="/usr/local/GateKey/var/dns.db"
+          Environment=CDDNS_LOG_PATH="/usr/local/GateKey/var/logs/cddns.log"
           
           [Install]
           WantedBy=default.target" > /etc/systemd/system/cloudflare_ddns.service
@@ -64,7 +72,8 @@ jobs:
           rm -rf ./CloudFlareDDNS/
           mv ./working_cddns/* ./
 
-          # Restart the process
+          # Reload all daemon configs and restart DDNS process
+          sudo systemctl daemon-reload
           sudo systemctl restart cloudflare_ddns.service
           
           # Done!
