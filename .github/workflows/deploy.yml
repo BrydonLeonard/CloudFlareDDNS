@@ -45,7 +45,7 @@ jobs:
 
           # Kill the process if it's already running
           echo 'Killing old processes'
-          pgrep -f cloudflare_ddns.py
+          pgrep -fl cloudflare_ddns.py
           pkill -f cloudflare_ddns.py
 
           # Flip the environments
