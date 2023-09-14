@@ -4,8 +4,7 @@ on:
   push:
     branches:
       - action-dev-1
-      - action-dev-2
-      - action-dev-3
+      - mainline
 jobs:
   run_example_job:
     runs-on: ubuntu-latest
