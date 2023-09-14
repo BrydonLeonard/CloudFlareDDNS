@@ -44,21 +44,29 @@ jobs:
           export CDDNS_DB_PATH="/usr/local/GateKey/var/dns.db"
           export CDDNS_LOG_PATH="/usr/local/GateKey/var/logs/cddns.log"
 
-          # Kill the process if it's already running
-          echo 'Killing old processes:'
-          pgrep -fx "python3 ./cloudflare_ddns.py"
-          pkill -fx "python3 ./cloudflare_ddns.py"
+          # Configure the daemon
+          echo 'Configuring the daemon'
+          sudo echo "[Unit]
+          Description=CloudFlare DDNS
+          
+          [Service]
+          Type=simple
+          User=brydonl
+          ExecStart='python3 /usr/local/GateKey/CloudFlareDDNS/cloudflare_ddns.py'
+          Restart=always
+          RestartSec=1s
+          
+          [Install]
+          WantedBy=default.target" > /etc/systemd/system/cloudflare_ddns.service
 
           # Flip the environments
           echo 'Flipping'
           rm -rf ./CloudFlareDDNS/
           mv ./working_cddns/* ./
 
-          # Run the script
-          echo 'Starting up'
-          cd CloudFlareDDNS
-          python3 ./cloudflare_ddns.py & disown
-
+          # Restart the process
+          sudo systemctl restart cloudflare_ddns.service
+          
           # Done!
           echo 'Done!'
           exit 0
