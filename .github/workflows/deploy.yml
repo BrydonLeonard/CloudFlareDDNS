@@ -21,6 +21,7 @@ jobs:
         command_timeout: 30m
         script: | 
           # Make a working dir
+          echo 'Setting up working dir'
           cd /usr/local/GateKey
           mkdir -p ./working_cddns
           mkdir -p ./var
@@ -44,9 +45,9 @@ jobs:
           export CDDNS_LOG_PATH="/usr/local/GateKey/var/logs/cddns.log"
 
           # Kill the process if it's already running
-          echo 'Killing old processes'
-          pgrep -fla cloudflare_ddns.py
-          pkill -f cloudflare_ddns.py
+          echo 'Killing old processes:'
+          pgrep -fx "python3 ./cloudflare_ddns.py"
+          pkill -fx "python3 ./cloudflare_ddns.py"
 
           # Flip the environments
           echo 'Flipping'
