@@ -1,0 +1,84 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - action-dev-1
+      - mainline
+jobs:
+  run_example_job:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+    - name: Deploy and run DDNS
+      uses: appleboy/ssh-action@master
+      with:
+        host: ssh.brydonleonard.com
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SSH_PRIV_KEY }}
+        port: 22
+        command_timeout: 30m
+        script: | 
+          # Make a working dir
+          echo 'Setting up working dir'
+          cd /usr/local/GateKey
+          mkdir -p ./working_cddns
+          mkdir -p ./var
+          mkdir -p ./var/logs
+          rm -rf ./working_cddns/*
+          cd working_cddns
+
+          # Clone the repo
+          echo 'Cloning'
+          git config user.email ${{ secrets.EMAIL }}
+          git config github.token ${{ secrets.GITHUB_TOKEN }}
+          git clone https://github.com/BrydonLeonard/CloudFlareDDNS.git
+
+          # Add the run script
+          echo 'Adding run script'
+          echo '#!/bin/bash
+          /usr/bin/python3 /usr/local/GateKey/CloudFlareDDNS/cloudflare_ddns.py' > ./CloudFlareDDNS/run.sh
+          sudo chmod +x ./CloudFlareDDNS/run.sh
+          
+          cd ../
+
+          # Set env vars
+          echo 'Setting env vars'
+
+          # Configure the daemon
+          echo 'Configuring the daemon'
+          sudo echo "[Unit]
+          Description=CloudFlare DDNS
+          
+          [Service]
+          Type=simple
+          User=brydonl
+          ExecStart='/usr/local/GateKey/CloudFlareDDNS/run.sh'
+          Restart=always
+          RestartSec=1s
+
+          # Env vars
+          Environment=CDDNS_API_KEY="${{ secrets.CLOUDFLARE_KEY }}"
+          Environment=CDDNS_DOMAIN_NAME="brydonleonard.com"
+          Environment=CDDNS_EMAIL_ADDRESS="${{ secrets.EMAIL }}"
+          Environment=CDDNS_DB_PATH="/usr/local/GateKey/var/dns.db"
+          Environment=CDDNS_LOG_PATH="/usr/local/GateKey/var/logs/cddns.log"
+          
+          [Install]
+          WantedBy=default.target" > /etc/systemd/system/cloudflare_ddns.service
+
+          # Flip the environments
+          echo 'Flipping'
+          rm -rf ./CloudFlareDDNS/
+          mv ./working_cddns/* ./
+
+          # Reload all daemon configs and restart DDNS process
+          sudo systemctl daemon-reload
+          sudo systemctl restart cloudflare_ddns.service
+          
+          # Done!
+          echo 'Done!'
+          exit 0
+          
+          
+          
