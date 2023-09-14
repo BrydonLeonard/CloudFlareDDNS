@@ -51,6 +51,9 @@ jobs:
           # Run the script
           cd CloudFlareDDNS
           python3 ./cloudflare_ddns.py & disown
+
+          # Done!
+          exit 0
           
           
           
