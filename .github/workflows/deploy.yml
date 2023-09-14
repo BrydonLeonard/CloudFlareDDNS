@@ -38,8 +38,8 @@ jobs:
           export CDDNS_API_KEY=${{ secrets.CLOUDFLARE_KEY }}
           export CDDNS_DOMAIN_NAME="brydonleonard.com"
           export CDDNS_EMAIL_ADDRESS= ${{ secrets.EMAIL }}
-          export CDDNS_DB_PATH="/usr/bin/GateKey/var/dns.db"
-          export CDDNS_LOG_PATH="/usr/bin/GateKey/var/logs/cddns.log"
+          export CDDNS_DB_PATH="/usr/local/GateKey/var/dns.db"
+          export CDDNS_LOG_PATH="/usr/local/GateKey/var/logs/cddns.log"
 
           # Kill the process if it's already running
           pgrep cloudflare_ddns.py | kill || echo "DDNS was not running"
