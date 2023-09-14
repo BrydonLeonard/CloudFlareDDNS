@@ -20,5 +20,4 @@ jobs:
         port: 22
         command_timeout: 30m
         script: | 
-          rsync -vrm  ./* ${{ secrets.USER_ADDR }}:/usr/local/cloudflare_ddns/
-          ssh ${{ secrets.USER_ADDR }} "pip install /usr/local/cloudflare_ddns/. && python3 /usr/local/cloudflare_ddns/cloudflare_ddns.py &"
+          whoami
