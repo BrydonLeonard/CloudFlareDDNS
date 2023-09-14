@@ -39,6 +39,7 @@ jobs:
           echo 'Adding run script'
           echo '#!/bin/bash
           /usr/bin/python3 /usr/local/GateKey/CloudFlareDDNS/cloudflare_ddns.py' > ./CloudFlareDDNS/run.sh
+          sudo chmod +x ./CloudFlareDDNS/run.sh
           
           cd ../
 
